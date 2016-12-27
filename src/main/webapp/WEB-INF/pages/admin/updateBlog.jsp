@@ -31,13 +31,13 @@
             <input type="text" class="form-control" id="title" name="title" placeholder="Enter Title:" value="${blog.title}"/>
         </div>
         <div class="form-group">
-            <label for="userByUserId.id">Author:</label>
-            <select class="form-control" id="userByUserId.id" name="userByUserId.id">
+            <label for="userEntity.id">Author:</label>
+            <select class="form-control" id="userEntity.id" name="userEntity.id">
                 <c:forEach items="${userList}" var="user">
-                    <c:if test="${user.id==blog.userByUserId.id}">
+                    <c:if test="${user.id==blog.userEntity.id}">
                         <option value="${user.id}" selected="selected">${user.nickname}, ${user.firstName} ${user.lastName}</option>
                     </c:if>
-                    <c:if test="${user.id!=blog.userByUserId.id}">
+                    <c:if test="${user.id!=blog.userEntity.id}">
                         <option value="${user.id}">${user.nickname}, ${user.firstName} ${user.lastName}</option>
                     </c:if>
                 </c:forEach>

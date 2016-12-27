@@ -57,7 +57,7 @@ public class BlogController {
 		System.out.println(blogEntity.getTitle());
 
 		// 打印博客作者id
-		System.out.println(blogEntity.getUserByUserId());
+//		System.out.println(blogEntity.getUserByUserId());
 
 		// 数据库中添加一篇博客，并立即刷新缓存并写入数据库
 		blogRepository.saveAndFlush(blogEntity);
@@ -96,7 +96,7 @@ public class BlogController {
 	@RequestMapping(value = "/admin/blogs/updateP", method = RequestMethod.POST)
 	public String updateBlogP(@ModelAttribute("blogP") BlogEntity blogEntity) {
 		// 更新博客信息
-		blogRepository.updateBlog(blogEntity.getTitle(), blogEntity.getUserByUserId().getId(), blogEntity.getContent(),
+		blogRepository.updateBlog(blogEntity.getTitle(), blogEntity.getUserEntity().getId(), blogEntity.getContent(),
 				blogEntity.getPubDate(), blogEntity.getId());
 		blogRepository.flush();
 		return "redirect:/admin/blogs";

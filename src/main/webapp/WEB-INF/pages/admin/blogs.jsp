@@ -49,7 +49,7 @@
                 <tr>
                     <td>${blog.id}</td>
                     <td>${blog.title}</td>
-                    <td>${blog.userByUserId.nickname}, ${blog.userByUserId.firstName} ${blog.userByUserId.lastName}</td>
+                    <td>${blog.userEntity.nickname}, ${blog.userEntity.firstName} ${blog.userEntity.lastName}</td>
                     <td><fmt:formatDate value="${blog.pubDate }" pattern="yyyy-MM-dd"/></td>
                     <td>
                         <a href="${pageContext.request.contextPath}/admin/blogs/show/${blog.id}" type="button" class="btn btn-sm btn-success">详情</a>

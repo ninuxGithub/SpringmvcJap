@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import com.hundsun.domain.BlogEntity;
 import com.hundsun.domain.UserEntity;
+import com.hundsun.repository.BlogRepository;
 import com.hundsun.repository.UserRepository;
 
 /**
@@ -32,7 +35,31 @@ public class IndexController {
 	UserRepository userRepository;
 
 	@Autowired
+	BlogRepository blogRepository;
+	
+	@Autowired
 	private RequestMappingHandlerMapping handlerMapping;
+	
+	@ResponseBody
+	@RequestMapping("/getBlogs")
+	public List<BlogEntity> getBlogs(){
+		return blogRepository.findAll();
+	}
+	
+	/**
+	 * 返回json
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping("/getjson")
+	public List<UserEntity> getJson(){
+		List<UserEntity> list = userRepository.findAllByHql();
+		/*for(UserEntity user : list){
+			user.setBlogs(null);
+		}*/
+		System.out.println(list);
+		return list;
+	}
 
 	// 用于定义一个请求映射，value为请求的url，值为 / 说明，该请求首页请求，method用以指定该请求类型，一般为get和post
 	@RequestMapping(value = "/", method = RequestMethod.GET)

@@ -30,8 +30,8 @@
             <input type="text" class="form-control" id="title" name="title" placeholder="Enter Title:"/>
         </div>
         <div class="form-group">
-            <label for="userByUserId.id">Author:</label>
-            <select class="form-control" id="userByUserId.id" name="userByUserId.id">
+            <label for="userEntity.id">Author:</label>
+            <select class="form-control" id="userEntity.id" name="userEntity.id">
                 <c:forEach items="${userList}" var="user">
                     <option value="${user.id}">${user.nickname}, ${user.firstName} ${user.lastName}</option>
                 </c:forEach>

@@ -35,7 +35,7 @@
         </tr>
         <tr>
             <th>Author</th>
-            <td>${blog.userByUserId.nickname}, ${blog.userByUserId.firstName} ${blog.userByUserId.lastName}</td>
+            <td>${blog.userEntity.nickname}, ${blog.userEntity.firstName} ${blog.userEntity.lastName}</td>
         </tr>
         <tr>
             <th>Content</th>

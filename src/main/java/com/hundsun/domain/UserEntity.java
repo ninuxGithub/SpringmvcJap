@@ -3,6 +3,7 @@ package com.hundsun.domain;
 import java.util.Collection;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +11,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Created by 10412 on 2016/12/21.
@@ -23,7 +26,9 @@ public class UserEntity
     private String password;
     private String firstName;
     private String lastName;
-    private Collection<BlogEntity> blogsById;
+    
+    @JsonIgnore
+    private Collection<BlogEntity> blogs;
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -101,20 +106,24 @@ public class UserEntity
         result = 31 * result + (lastName != null ? lastName.hashCode() : 0);
         return result;
     }
+    
+    
 
-    @OneToMany(mappedBy = "userByUserId")
-    public Collection<BlogEntity> getBlogsById() {
-        return blogsById;
-    }
+    @OneToMany(mappedBy="userEntity" , cascade= CascadeType.PERSIST, targetEntity= BlogEntity.class)
+    public Collection<BlogEntity> getBlogs() {
+		return blogs;
+	}
 
-    public void setBlogsById(Collection<BlogEntity> blogsById) {
-        this.blogsById = blogsById;
-    }
+	public void setBlogs(Collection<BlogEntity> blogs) {
+		this.blogs = blogs;
+	}
+
+	
 
 	@Override
 	public String toString() {
 		return "UserEntity [id=" + id + ", nickname=" + nickname + ", password=" + password + ", firstName=" + firstName
-				+ ", lastName=" + lastName + ", blogsById=" + blogsById + "]";
+				+ ", lastName=" + lastName + ", blogsById=" +  "]";
 	}
     
     

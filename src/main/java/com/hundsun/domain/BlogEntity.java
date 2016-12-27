@@ -5,10 +5,12 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Past;
@@ -29,7 +31,8 @@ public class BlogEntity
     @Past
     @DateTimeFormat(pattern="yyyy/MM/dd")
     private Date pubDate;
-    private UserEntity userByUserId;
+    
+    private UserEntity userEntity;
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
@@ -52,8 +55,9 @@ public class BlogEntity
         this.title = title;
     }
 
-    @Basic
-    @Column(name = "content", nullable = true, length = 45)
+    @Lob
+    @Basic(fetch=FetchType.EAGER)
+    @Column(name = "content", nullable = true, columnDefinition="CLOB")
     public String getContent() {
         return content;
     }
@@ -95,21 +99,25 @@ public class BlogEntity
         result = 31 * result + (pubDate != null ? pubDate.hashCode() : 0);
         return result;
     }
+    
+    
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
-    public UserEntity getUserByUserId() {
-        return userByUserId;
-    }
+    @ManyToOne(targetEntity=UserEntity.class)
+    @JoinColumn(name = "user_id", nullable = false)
+    public UserEntity getUserEntity() {
+		return userEntity;
+	}
 
-    public void setUserByUserId(UserEntity userByUserId) {
-        this.userByUserId = userByUserId;
-    }
+	public void setUserEntity(UserEntity userEntity) {
+		this.userEntity = userEntity;
+	}
+
+   
 
 	@Override
 	public String toString() {
 		return "BlogEntity [id=" + id + ", title=" + title + ", content=" + content + ", pubDate=" + pubDate
-				+ ", userByUserId=" + userByUserId + "]";
+				+ ", userByUserId="  + "]";
 	}
     
     

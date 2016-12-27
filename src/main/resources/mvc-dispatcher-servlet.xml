@@ -1,80 +1,134 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
-	xmlns:mvc="http://www.springframework.org/schema/mvc"
-	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jpa="http://www.springframework.org/schema/data/jpa" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
 		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa-1.8.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
 
-    <!--指明 controller 所在包，并扫描其中的注解-->
-    <context:component-scan base-package="com.hundsun"/>
+	<!--指明 controller 所在包，并扫描其中的注解 -->
+	<context:component-scan base-package="com.hundsun" />
 
-    <!-- 静态资源(js、image等)的访问 -->
-    <mvc:default-servlet-handler/>
+	<!-- 静态资源(js、image等)的访问 -->
+	<mvc:default-servlet-handler />
 
-    <!-- 开启注解 -->
-    <mvc:annotation-driven/>
+	<!-- 开启注解 -->
+	<mvc:annotation-driven />
 
-    <!--ViewResolver 视图解析器-->
-    <!--用于支持Servlet、JSP视图解析-->
-    <bean id="jspViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
-        <property name="prefix" value="/WEB-INF/pages/"/>
-        <property name="suffix" value=".jsp"/>
-    </bean>
+	<!-- 配置拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<!-- 拦截器作用的路径 -->
+			<mvc:mapping path="/getjson" />
+			<bean class="com.hundsun.interceptors.MyInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
 
-    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-        <property name="persistenceUnitName" value="defaultPersistenceUnit"/>
-        <property name="packagesToScan" value="com.hundsun.domain" />
-        <property name="jpaVendorAdapter">
-            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
-        </property>
-        <property name="jpaProperties">
-            <props>
-                <prop key="hibernate.connection.driver_class">com.mysql.jdbc.Driver</prop>
-                <prop key="hibernate.connection.url">jdbc:mysql://localhost:3306/test?useSSL=false</prop>
-                <prop key="hibernate.connection.username">root</prop>
-                <prop key="hibernate.connection.password">root</prop>
-                <prop key="hibernate.show_sql">false</prop>
-                <prop key="hibernate.connection.useUnicode">true</prop>
-                <prop key="hibernate.connection.characterEncoding">UTF-8</prop>
-                <prop key="hibernate.format_sql">true</prop>
-                <prop key="hibernate.use_sql_comments">true</prop>
-                <prop key="hibernate.hbm2ddl.auto">update</prop>
-                <prop key="hibernate.connection.autoReconnect">true</prop>
-                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
-                <prop key="connection.autoReconnectForPools">true</prop>
-                <prop key="connection.is-connection-validation-required">true</prop>
+	<!-- ***总结： 对应采用xml配置的Spring-Qurtz 的任务调度的基本步骤为 a,b,c,c 四个步骤 每个步骤都非常的关键 对应注解方式实现的任务调度要采用 
+		步骤 e,f*** -->
 
-                <prop key="hibernate.c3p0.validate">true</prop>
-                <prop key="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider</prop>
-                <prop key="hibernate.c3p0.min_size">5</prop>
-                <prop key="hibernate.c3p0.max_size">600</prop>
-                <prop key="hibernate.c3p0.timeout">1800</prop>
-                <prop key="hibernate.c3p0.max_statements">50</prop>
-                <prop key="hibernate.c3p0.preferredTestQuery">SELECT 1;</prop>
-                <prop key="hibernate.c3p0.testConnectionOnCheckout">true</prop>
-                <prop key="hibernate.c3p0.idle_test_period">3000</prop>
-                <prop key="javax.persistence.validation.mode">none</prop>
-            </props>
-        </property>
-    </bean>
 
-    <!-- 事务管理 -->
-    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-        <property name="entityManagerFactory" ref="entityManagerFactory"/>
-    </bean>
+	<!-- A.配置任务bean -->
+	<bean id="xmlSpringTask" class="com.hundsun.scheduleimpl.XmlSpringTask" />
 
-    <!-- 开启事务管理注解 -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
-    
-     <!-- 表示JPA Repository所在的包 -->
-    <jpa:repositories base-package="com.hundsun.repository" 
-    	entity-manager-factory-ref="entityManagerFactory"/>
-    
+	<!-- B.配置MethodInvokingJobDetailFactoryBean 工厂bean -->
+	<bean id="jobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="xmlSpringTask"></property>
+		<property name="targetMethod" value="exeJob"></property>
+		<property name="concurrent" value="false"></property>
+	</bean>
+
+	<!-- C.配置CronTriggerBean 触发器bean -->
+	<bean id="trigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="jobDetail"></property>
+		<property name="cronExpression">
+			<value>0/3 * * * * ?</value>
+		</property>
+	</bean>
+
+	<!-- D.配置任务调度的bean -->
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="trigger" />
+			</list>
+		</property>
+	</bean>
+
+
+	<!-- 以下连个配置是task 注解配置必须的 -->
+	<!-- E.开启任务调度自动注解配置 -->
+	<task:annotation-driven />
+
+	<!-- F.加入自动注解的处理器 -->
+	<bean
+		class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"></bean>
+
+	<!--ViewResolver 视图解析器 -->
+	<!--用于支持Servlet、JSP视图解析 -->
+	<bean id="jspViewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/pages/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="defaultPersistenceUnit" />
+		<property name="packagesToScan" value="com.hundsun.domain" />
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+		<property name="jpaProperties">
+			<props>
+				<prop key="hibernate.connection.driver_class">com.mysql.jdbc.Driver</prop>
+				<prop key="hibernate.connection.url">jdbc:mysql://localhost:3306/test?useSSL=false</prop>
+				<prop key="hibernate.connection.username">root</prop>
+				<prop key="hibernate.connection.password">root</prop>
+				<prop key="hibernate.show_sql">false</prop>
+				<prop key="hibernate.connection.useUnicode">true</prop>
+				<prop key="hibernate.connection.characterEncoding">UTF-8</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.use_sql_comments">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.connection.autoReconnect">true</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="connection.autoReconnectForPools">true</prop>
+				<prop key="connection.is-connection-validation-required">true</prop>
+
+				<!-- c3p0 config -->
+				<prop key="hibernate.c3p0.validate">true</prop>
+				<prop key="hibernate.connection.provider_class">org.hibernate.service.jdbc.connections.internal.C3P0ConnectionProvider
+				</prop>
+				<prop key="hibernate.c3p0.min_size">5</prop>
+				<prop key="hibernate.c3p0.max_size">600</prop>
+				<prop key="hibernate.c3p0.timeout">1800</prop>
+				<prop key="hibernate.c3p0.max_statements">50</prop>
+				<prop key="hibernate.c3p0.preferredTestQuery">SELECT 1;</prop>
+				<prop key="hibernate.c3p0.testConnectionOnCheckout">true</prop>
+				<prop key="hibernate.c3p0.idle_test_period">3000</prop>
+				<prop key="javax.persistence.validation.mode">none</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- 事务管理 -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<!-- 开启事务管理注解 -->
+	<tx:annotation-driven transaction-manager="transactionManager" />
+
+	<!-- 表示JPA Repository所在的包 -->
+	<jpa:repositories base-package="com.hundsun.repository"
+		entity-manager-factory-ref="entityManagerFactory" />
+
 </beans>
