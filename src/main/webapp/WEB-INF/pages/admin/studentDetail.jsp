@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -6,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <title>SpringMVC Demo 首页</title>
+    <title>SpringMVC 博文详情</title>
 
     <!-- 新 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -19,22 +20,29 @@
     <![endif]-->
 </head>
 <body>
-	<h1>这里是SpringMVC Demo首页</h1>
+<div class="container">
+    <h1>SpringMVC 博文详情</h1>
+    <hr/>
 
-	<h3>出现此页面，说明配置成功。
-		<a href="${pageContext.request.contextPath}/admin/users">用户详细</a>
-		
-		<a href="${pageContext.request.contextPath}/admin/blogs">博客详情</a>
-		
-		<a href="${pageContext.request.contextPath}/admin/students">学生详情</a>
-	</h3>
-
-
-
-<br>
-<br>
-
-${requestScope.urls}
+    <table class="table table-bordered table-striped">
+        <tr>
+            <th>ID</th>
+            <td>${stu.id}</td>
+        </tr>
+        <tr>
+            <th>Name</th>
+            <td>${stu.name}</td>
+        </tr>
+        <tr>
+            <th>Age</th>
+            <td>${stu.age}</td>
+        </tr>
+        <tr>
+            <th>Birth Date</th>
+            <td><fmt:formatDate value="${stu.birthday}" pattern="yyyy年MM月dd日"/></td>
+        </tr>
+    </table>
+</div>
 
 <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
 <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>

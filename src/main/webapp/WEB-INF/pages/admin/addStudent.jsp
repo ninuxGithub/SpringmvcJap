@@ -1,4 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -6,7 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <title>SpringMVC Demo 首页</title>
+    <title>SpringMVC 添加博客</title>
 
     <!-- 新 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -19,22 +21,29 @@
     <![endif]-->
 </head>
 <body>
-	<h1>这里是SpringMVC Demo首页</h1>
-
-	<h3>出现此页面，说明配置成功。
-		<a href="${pageContext.request.contextPath}/admin/users">用户详细</a>
-		
-		<a href="${pageContext.request.contextPath}/admin/blogs">博客详情</a>
-		
-		<a href="${pageContext.request.contextPath}/admin/students">学生详情</a>
-	</h3>
-
-
-
-<br>
-<br>
-
-${requestScope.urls}
+<div class="container">
+    <h1>SpringMVC 添加博客</h1>
+    <hr/>
+    <form:form action="${pageContext.request.contextPath}/admin/student/addP" method="post" commandName="student" role="form">
+        <div class="form-group">
+            <label for="title">Name:</label>
+            <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name:"/>
+        </div>
+       
+        <div class="form-group">
+            <label for="content">Age:</label>
+            <input type="text" class="form-control" id="age" name="age" placeholder="Enter Age:">
+        </div>
+        <div class="form-group">
+            <label for="pubDate">Birth Date:</label>
+            <input type="text" class="form-control" id="birthday" name="birthday" 
+            	placeholder="Enter Birth Date:(yyyy-MM-dd)"/>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-sm btn-success">提交</button>
+        </div>
+    </form:form>
+</div>
 
 <!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
 <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>

@@ -45,6 +45,11 @@ public class SpringScheduleImpl implements SpringSchedule {
 	@Scheduled(cron = "0/20 * * * * ?")
 	@Override
 	public void exeJob() {
+		//callback();
+		System.out.println("without callback");
+	}
+
+	public void callback() {
 		Date d = new Date();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:ss:mm");
 		System.out.println("enter my schedule----"+ sdf.format(d));
