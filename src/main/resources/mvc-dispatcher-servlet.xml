@@ -16,8 +16,19 @@
 	<!-- 静态资源(js、image等)的访问 -->
 	<mvc:default-servlet-handler />
 
-	<!-- 开启注解 -->
-	<mvc:annotation-driven />
+	<!-- 开启注解： conversionService 的功能 数据格式转换 ，数据校验 ， 数据绑定 -->
+	<mvc:annotation-driven/>
+
+	<!-- 解决日期加入了@DateFormate 之后异常解决 -->
+	<!-- 
+	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean"></bean>
+	 -->
+
+	<!-- 开启国际化资源文件，信息本地化 -->
+	<bean id="messageSource"
+		class="org.springframework.context.support.ResourceBundleMessageSource">
+		<property name="basename" value="i18n"></property>
+	</bean>
 
 	<!-- 配置拦截器 -->
 	<mvc:interceptors>
@@ -47,7 +58,7 @@
 	<bean id="trigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="jobDetail"></property>
 		<property name="cronExpression">
-			<value>0/3 * * * * ?</value>
+			<value>* * 0/1 * * ?</value>
 		</property>
 	</bean>
 

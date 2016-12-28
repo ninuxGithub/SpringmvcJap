@@ -9,8 +9,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 
+//import org.hibernate.validator.constraints.NotEmpty; 用于集合
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
@@ -21,14 +24,20 @@ public class Student {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+
+	@NotNull(message = "姓名不能为空")
+	@Size(max = 10, min = 1, message = "姓名字符长度1~10")
 	private String name;
-	
-	@Max(value=120)
-	@Min(value=0)
+
+	@Max(value = 120)
+	@Min(value = 0)
+	@NumberFormat
+	@NotNull(message = "年龄不能为空")
 	private Integer age;
-	
-	@Past
+
+	@Past(message = "不可是过往的时间")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	@NotNull(message = "生日不能为空")
 	private Date birthday;
 
 	public Student() {

@@ -42,7 +42,7 @@ public class SpringScheduleImpl implements SpringSchedule {
 	// "0/20 * * * * ?" : 每20秒执行一次
 	
 	
-	@Scheduled(cron = "0/20 * * * * ?")
+	@Scheduled(cron = "* * 15/1 * * ?")
 	@Override
 	public void exeJob() {
 		//callback();
