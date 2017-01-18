@@ -27,6 +27,8 @@
 		<a href="${pageContext.request.contextPath}/admin/blogs">博客详情</a>
 		
 		<a href="${pageContext.request.contextPath}/admin/students">学生详情</a>
+		
+		<a href="${pageContext.request.contextPath}/angular/home">angular js</a>
 	</h3>
 
 

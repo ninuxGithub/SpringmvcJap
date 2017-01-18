@@ -1,5 +1,6 @@
 package com.hundsun.domain;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -39,6 +40,15 @@ public class Student {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@NotNull(message = "生日不能为空")
 	private Date birthday;
+
+	private String birth;
+
+	public String getBirth() {
+		if (null != birthday)
+			return new SimpleDateFormat("yyyy-MM-dd").format(birthday);
+		else
+			return birth;
+	}
 
 	public Student() {
 	}
@@ -84,7 +94,12 @@ public class Student {
 
 	@Override
 	public String toString() {
-		return "Student [id=" + id + ", name=" + name + ", age=" + age + ", birthday=" + birthday + "]";
+		return "Student [id=" + id + ", name=" + name + ", age=" + age + ", birthday=" + birthday + ", birth=" + birth
+				+ "]";
+	}
+
+	public void setBirth(String birth) {
+		this.birth = birth;
 	}
 
 }

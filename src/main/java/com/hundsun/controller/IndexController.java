@@ -40,6 +40,11 @@ public class IndexController {
 	@Autowired
 	private RequestMappingHandlerMapping handlerMapping;
 	
+	@RequestMapping("/angular/home")
+	public String angularHome(){
+		return "angular/home";
+	}
+	
 	@ResponseBody
 	@RequestMapping("/getBlogs")
 	public List<BlogEntity> getBlogs(){
