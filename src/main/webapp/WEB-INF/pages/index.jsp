@@ -29,6 +29,8 @@
 		<a href="${pageContext.request.contextPath}/admin/students">学生详情</a>
 		
 		<a href="${pageContext.request.contextPath}/angular/home">angular js</a>
+		
+		<a href="${pageContext.request.contextPath}/index.html">angular route</a>
 	</h3>
 
 
